@@ -12,7 +12,11 @@ import datetime
 import sqlite3
 import sys
 
-sqlite_file = "daily_stock.sqlite"  # name your database.
+if len(sys.argv) > 1:
+    sqlite_file = sys.argv[1]
+else:
+    sqlite_file = "daily_stock.sqlite"  # name your database.
+table_name = sqlite_file[ :sqlite_file.find(".")]
 url = "https://www.alphavantage.co/query"  # url of Alpha Vantage.
 symbols = {"Apple": "AAPL","Alphabet": "GOOG","Amazon": "AMZN"}  # list companies of your choice and their symbols.
 arg_dict = {"apikey": "8K64WVV2CXLH0KF8","function": "TIME_SERIES_DAILY","outputsize": "full"}
@@ -34,7 +38,7 @@ try:
     c = conn.cursor()
 
     c.execute("CREATE TABLE {tn} (date text, stock text, open real, high real, low real, close_value real, \
-    volume integer)".format(tn="Daily_Stock"))  # create a table.
+    volume integer)".format(tn=table_name))  # create a table.
 except Exception as e:
     print("Victor: failed to create a table")
     print(e)
@@ -47,7 +51,7 @@ for i in symbols.keys():
     try:
         response = requests.get(url,headers=headsDict)
         results = response.json()["Time Series (Daily)"]
-        print("Victor: received stock data from",i)
+        print("Victor: received stock data from", i)
         print("Victor: processing the data...")
         for key in results.keys():
             if int(key[:4]) >= ten_years_before:  # we only need the data recorded in the most recent ten years.
