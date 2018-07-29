@@ -30,7 +30,6 @@ for key in arg_dict.keys():
 url += options
 base_url = url  # just a copy of the base of url.
 ten_years_before = datetime.datetime.now().year - 10  # specify the number of the year ten years ago...
-print(url)
 
 print("Victor: creating the database and making the connection...")
 try:
@@ -57,9 +56,9 @@ for i in symbols.keys():
             if int(key[:4]) >= ten_years_before:  # we only need the data recorded in the most recent ten years.
                 result = results[key]
                 c.execute(
-                    "INSERT INTO Daily_Stock VALUES ({date}, {stock}, {open}, {high}, {low}, {close}, {volume})".format(
-                        date="'" + key + "'",stock="'" + symbols[i] + "'",open=result["1. open"],high=result["2. high"],
-                        low=result["3. low"],close=result["4. close"],volume=result["5. volume"]))
+                    "INSERT INTO " + table_name + " VALUES ({date}, {stock}, {open}, {high}, {low}, {close}, \
+                    {volume})".format(date="'" + key + "'",stock="'" + symbols[i] + "'",open=result["1. open"]\
+                    ,high=result["2. high"],low=result["3. low"],close=result["4. close"],volume=result["5. volume"]))
             else:
                 break  # only use break if you can make sure the data received is in descending order by years;
                 # otherwise, use continue instead.
